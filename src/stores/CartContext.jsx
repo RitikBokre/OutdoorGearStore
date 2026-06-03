@@ -17,10 +17,7 @@ export function CartProvider({ children }) {
           cartItem.key === key
             ? {
                 ...cartItem,
-                quantity: Math.min(
-                  cartItem.quantity + item.quantity,
-                  item.availableStock,
-                ),
+                quantity: Math.min(item.quantity, item.availableStock),
               }
             : cartItem,
         );

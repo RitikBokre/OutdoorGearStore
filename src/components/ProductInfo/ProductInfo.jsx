@@ -1,9 +1,10 @@
+import { useEffect, useMemo } from "react";
 import { Minus, Plus, Truck } from "lucide-react";
 import { useCart } from "../../stores/CartContext.jsx";
 import styles from "./ProductInfo.module.scss";
 
 export function ProductInfo({ product, enhancements, variantState }) {
-  const { addItem } = useCart();
+  const { addItem, cart } = useCart();
   const {
     quantity,
     selectedColor,
@@ -17,6 +18,20 @@ export function ProductInfo({ product, enhancements, variantState }) {
 
   const isSoldOut = !selectedVariant || selectedVariant.stock === 0;
   const maxQuantity = Math.max(selectedVariant?.stock ?? 1, 1);
+  const cartItem = useMemo(
+    () =>
+      cart.find(
+        (item) =>
+          item.productId === product.id &&
+          item.colorId === selectedColor.id &&
+          item.size === selection.size,
+      ),
+    [cart, product.id, selectedColor.id, selection.size],
+  );
+
+  useEffect(() => {
+    setQuantity(cartItem ? Math.min(cartItem.quantity, maxQuantity) : 1);
+  }, [cartItem, maxQuantity, setQuantity]);
 
   const handleAddToCart = () => {
     if (isSoldOut) return;
