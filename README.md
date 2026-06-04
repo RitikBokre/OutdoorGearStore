@@ -32,4 +32,4 @@ The desktop hover zoom is CSS-based for speed and reliability. It gives the expe
 
 ## Live URL
 
-Not hosted for this submission.
+https://ridgentrail.netlify.app/
