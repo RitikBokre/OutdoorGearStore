@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-function getInitialSelection(enhancements) {
-  const params = new URLSearchParams(window.location.search);
-  const colorParam = params.get("color");
-  const sizeParam = params.get("size");
+function getInitialSelection(enhancements, searchParams) {
+  const colorParam = searchParams.get("color");
+  const sizeParam = searchParams.get("size");
   const colorExists = enhancements.colors.some((color) => color.id === colorParam);
   const sizeExists = enhancements.sizes.includes(sizeParam);
 
@@ -14,7 +14,10 @@ function getInitialSelection(enhancements) {
 }
 
 export function useSelectedVariant(enhancements) {
-  const [selection, setSelection] = useState(() => getInitialSelection(enhancements));
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selection, setSelection] = useState(() =>
+    getInitialSelection(enhancements, searchParams),
+  );
   const [quantity, setQuantity] = useState(1);
 
   const selectedColor = useMemo(
@@ -45,11 +48,16 @@ export function useSelectedVariant(enhancements) {
   );
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("color", selection.colorId);
-    params.set("size", selection.size);
-    window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
-  }, [selection]);
+    setSearchParams(
+      (currentParams) => {
+        const params = new URLSearchParams(currentParams);
+        params.set("color", selection.colorId);
+        params.set("size", selection.size);
+        return params;
+      },
+      { replace: true },
+    );
+  }, [selection.colorId, selection.size, setSearchParams]);
 
   useEffect(() => {
     const max = Math.max(selectedVariant?.stock ?? 1, 1);

@@ -1,33 +1,43 @@
+import { Link, Navigate, Route, Routes, useParams } from "react-router-dom";
 import { CartDrawer } from "./components/CartDrawer/CartDrawer.jsx";
-import { NavLink } from "./components/NavLink/NavLink.jsx";
 import { ProductDetails } from "./components/ProductDetails/ProductDetails.jsx";
 import { ProductGallery } from "./components/ProductGallery/ProductGallery.jsx";
 import { ProductInfo } from "./components/ProductInfo/ProductInfo.jsx";
 import { ProductListing } from "./components/ProductListing/ProductListing.jsx";
 import { ProductSkeleton } from "./components/ProductSkeleton/ProductSkeleton.jsx";
 import { useProduct } from "./hooks/useProduct.js";
-import { useRoute } from "./hooks/useRoute.js";
 import { useSelectedVariant } from "./hooks/useSelectedVariant.js";
 import { productEnhancements } from "./data/productEnhancements.js";
 import styles from "./App.module.scss";
 
 export function App() {
-  const route = useRoute();
-
   return (
     <main className={styles.shell}>
       <header className={styles.header}>
-        <NavLink className={styles.logo} to="/" aria-label="Ridge & Trail home">
+        <Link className={styles.logo} to="/" aria-label="Ridge & Trail home">
           Ridge & Trail
-        </NavLink>
+        </Link>
         <CartDrawer />
       </header>
 
-      {route.name === "listing" && <ProductListing />}
-
-      {route.name === "product" && <ProductPage productId={route.params.id} />}
+      <Routes>
+        <Route path="/" element={<ProductListing />} />
+        <Route path="/product/:id" element={<ProductRoute />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </main>
   );
+}
+
+function ProductRoute() {
+  const { id } = useParams();
+  const productId = Number(id);
+
+  if (!Number.isFinite(productId)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <ProductPage productId={productId} />;
 }
 
 function ProductPage({ productId }) {

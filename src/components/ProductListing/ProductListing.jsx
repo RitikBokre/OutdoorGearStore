@@ -1,8 +1,8 @@
 import { ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom";
 import { productEnhancements } from "../../data/productEnhancements.js";
 import { useProducts } from "../../hooks/useProducts.js";
 import { useCart } from "../../stores/CartContext.jsx";
-import { NavLink } from "../NavLink/NavLink.jsx";
 import styles from "./ProductListing.module.scss";
 
 function getDefaultVariant() {
@@ -68,13 +68,13 @@ export function ProductListing() {
       <div className={styles.grid}>
         {products.map((product) => (
           <article className={styles.card} key={product.id}>
-            <NavLink to={`/product/${product.id}`} aria-label={`View ${product.title}`}>
+            <Link to={`/product/${product.id}`} aria-label={`View ${product.title}`}>
               <img src={product.image} alt={product.title} />
-            </NavLink>
+            </Link>
             <div className={styles.cardBody}>
-              <NavLink className={styles.productName} to={`/product/${product.id}`}>
+              <Link className={styles.productName} to={`/product/${product.id}`}>
                 {product.title}
-              </NavLink>
+              </Link>
               <div className={styles.cardMeta}>
                 <strong>${product.price.toFixed(2)}</strong>
                 <span>{product.category}</span>
