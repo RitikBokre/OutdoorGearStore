@@ -17,7 +17,7 @@ npm run build
 
 ## Implementation Notes
 
-- Product data is fetched from [Fake Store API](https://fakestoreapi.com) using product id `3`.
+- Product data is fetched from [Fake Store API](https://fakestoreapi.com).
 - Fake Store does not provide color, size, gallery, or inventory data, so those PDP-specific details live in `src/data/productEnhancements.js`.
 - Cart state persists in `localStorage` under `outdoor-gear-cart`.
 - Gallery image index and selected product details tab also persist in `localStorage`.

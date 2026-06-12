@@ -18,6 +18,8 @@ export function ProductInfo({ product, enhancements, variantState }) {
 
   const isSoldOut = !selectedVariant || selectedVariant.stock === 0;
   const maxQuantity = Math.max(selectedVariant?.stock ?? 1, 1);
+  const isOnSale = product.id % 2 === 0;
+  const compareAtPrice = product.price * 1.18;
   const cartItem = useMemo(
     () =>
       cart.find(
@@ -36,17 +38,20 @@ export function ProductInfo({ product, enhancements, variantState }) {
   const handleAddToCart = () => {
     if (isSoldOut) return;
 
-    addItem({
-      availableStock: selectedVariant.stock,
-      colorId: selectedColor.id,
-      colorName: selectedColor.name,
-      image: selectedColor.gallery[0].src,
-      name: product.title,
-      price: enhancements.salePrice,
-      productId: product.id,
-      quantity,
-      size: selection.size,
-    });
+    addItem(
+      {
+        availableStock: selectedVariant.stock,
+        colorId: selectedColor.id,
+        colorName: selectedColor.name,
+        image: selectedColor.gallery[0].src,
+        name: product.title,
+        price: product.price,
+        productId: product.id,
+        quantity,
+        size: selection.size,
+      },
+      { mode: "replace" },
+    );
   };
 
   return (
@@ -55,10 +60,10 @@ export function ProductInfo({ product, enhancements, variantState }) {
       <h1>{product.title}</h1>
 
       <div className={styles.priceRow}>
-        <span className={styles.salePrice}>${enhancements.salePrice.toFixed(2)}</span>
-        <span className={styles.compareAt}>
-          ${enhancements.compareAtPrice.toFixed(2)}
-        </span>
+        <span className={styles.salePrice}>${product.price.toFixed(2)}</span>
+        {isOnSale && (
+          <span className={styles.compareAt}>${compareAtPrice.toFixed(2)}</span>
+        )}
       </div>
 
       <div className={styles.optionGroup}>

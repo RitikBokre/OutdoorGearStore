@@ -36,11 +36,12 @@ export function ProductDetails({ description, specs, reviews }) {
       >
         {activeTab === "Description" && (
           <div className={styles.copy}>
-            <h2>Built for fast-changing days outside</h2>
+            <h2>Product overview</h2>
             <p>{description}</p>
             <p>
-              We positioned this PDP as a premium shell layer with practical
-              merchandising details layered over the Fake Store API record.
+              This page combines Fake Store API product data with local
+              merchandising data for variants, stock, specifications, and
+              reviews.
             </p>
           </div>
         )}

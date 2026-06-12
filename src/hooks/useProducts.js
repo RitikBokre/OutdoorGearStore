@@ -2,42 +2,37 @@ import { useCallback, useEffect, useState } from "react";
 
 const API_BASE = "https://fakestoreapi.com";
 
-export function useProduct(productId) {
+export function useProducts() {
   const [state, setState] = useState({
-    product: null,
+    products: [],
     status: "loading",
     error: "",
   });
 
-  const fetchProduct = useCallback(async () => {
-    if (!productId) {
-      setState({ product: null, status: "idle", error: "" });
-      return;
-    }
-
+  const fetchProducts = useCallback(async () => {
     setState((current) => ({ ...current, status: "loading", error: "" }));
 
     try {
-      const response = await fetch(`${API_BASE}/products/${productId}`);
+      const response = await fetch(`${API_BASE}/products`);
 
       if (!response.ok) {
         throw new Error(`Fake Store API returned ${response.status}`);
       }
 
-      const product = await response.json();
-      setState({ product, status: "success", error: "" });
+      const products = await response.json();
+      setState({ products, status: "success", error: "" });
     } catch (error) {
       setState({
-        product: null,
+        products: [],
         status: "error",
         error: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  }, [productId]);
+  }, []);
 
   useEffect(() => {
-    fetchProduct();
-  }, [fetchProduct]);
+    fetchProducts();
+  }, [fetchProducts]);
 
-  return { ...state, refetch: fetchProduct };
+  return { ...state, refetch: fetchProducts };
 }

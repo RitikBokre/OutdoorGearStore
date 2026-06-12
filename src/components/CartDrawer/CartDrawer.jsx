@@ -1,10 +1,17 @@
-import { ShoppingBag, X } from "lucide-react";
+import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { useCart } from "../../stores/CartContext.jsx";
 import styles from "./CartDrawer.module.scss";
 
 export function CartDrawer() {
-  const { cart, cartCount, cartTotal, isCartOpen, removeItem, setIsCartOpen } =
-    useCart();
+  const {
+    cart,
+    cartCount,
+    cartTotal,
+    isCartOpen,
+    removeItem,
+    setIsCartOpen,
+    updateQuantity,
+  } = useCart();
 
   return (
     <>
@@ -38,23 +45,62 @@ export function CartDrawer() {
               <ul className={styles.items}>
                 {cart.map((item) => (
                   <li key={item.key}>
-                    <div>
-                      <strong>{item.name}</strong>
-                      <span>
-                        {item.colorName} / {item.size} / Qty {item.quantity}
-                      </span>
+                    <img src={item.image} alt="" />
+                    <div className={styles.itemContent}>
+                      <div>
+                        <strong>{item.name}</strong>
+                        <span>
+                          {item.colorName} / {item.size}
+                        </span>
+                        <small>${item.price.toFixed(2)} each</small>
+                      </div>
+                      <div className={styles.itemActions}>
+                        <div className={styles.stepper}>
+                          <button
+                            aria-label={`Decrease quantity for ${item.name}`}
+                            disabled={item.quantity <= 1}
+                            onClick={() =>
+                              updateQuantity(item.key, item.quantity - 1)
+                            }
+                            type="button"
+                          >
+                            <Minus aria-hidden="true" size={14} />
+                          </button>
+                          <output aria-live="polite">{item.quantity}</output>
+                          <button
+                            aria-label={`Increase quantity for ${item.name}`}
+                            disabled={item.quantity >= item.availableStock}
+                            onClick={() =>
+                              updateQuantity(item.key, item.quantity + 1)
+                            }
+                            type="button"
+                          >
+                            <Plus aria-hidden="true" size={14} />
+                          </button>
+                        </div>
+                        <button
+                          className={styles.removeButton}
+                          type="button"
+                          onClick={() => removeItem(item.key)}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                    <button type="button" onClick={() => removeItem(item.key)}>
-                      Remove
-                    </button>
                   </li>
                 ))}
               </ul>
             )}
 
-            <div className={styles.total}>
-              <span>Total</span>
-              <strong>${cartTotal.toFixed(2)}</strong>
+            <div className={styles.summary}>
+              <div>
+                <span>Subtotal</span>
+                <strong>${cartTotal.toFixed(2)}</strong>
+              </div>
+              <div>
+                <span>Grand total</span>
+                <strong>${cartTotal.toFixed(2)}</strong>
+              </div>
             </div>
           </aside>
         </div>
